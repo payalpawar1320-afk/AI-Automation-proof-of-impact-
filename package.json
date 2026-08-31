@@ -3,15 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "description": "Proof of Impact Workspace (Frontend on Vercel, Express API on Render, MongoDB Atlas)",
+  "workspaces": [
+    "client",
+    "server"
+  ],
   "scripts": {
-    "build": "npm --prefix client run build",
     "dev": "npm --prefix client run dev",
-    "start": "npm --prefix client start",
-    "dev:server": "npm --prefix server run dev",
-    "dev:client": "npm --prefix client run dev",
-    "build:server": "npm --prefix server run build",
-    "build:client": "npm --prefix client run build",
-    "start:server": "npm --prefix server start",
-    "start:client": "npm --prefix client start"
+    "build": "npm --prefix client run build",
+    "start": "npm --prefix client start"
   }
 }
