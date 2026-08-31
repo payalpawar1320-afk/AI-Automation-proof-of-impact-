@@ -78,7 +78,7 @@ Respond in exact JSON format:
       });
 
       if (response.ok) {
-        const data = await response.json();
+        const data: any = await response.json();
         const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
         if (text) {
           const parsed = JSON.parse(text);
