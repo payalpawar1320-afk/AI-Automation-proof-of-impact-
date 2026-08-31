@@ -1,42 +1,56 @@
-# dependencies
-/node_modules
-/.pnp
+# Dependencies
+node_modules/
+*/node_modules/
+.pnp
 .pnp.js
 .yarn/install-state.gz
 
-# testing
-/coverage
+# Next.js and build outputs
+.next/
+*/.next/
+dist/
+*/dist/
+build/
+*/build/
+out/
+*/out/
 
-# next.js
-/.next/
-/out/
+# Environment and secrets (Exclude sensitive keys)
+.env
+.env.local
+.env.*.local
+*.env
+*/.env
+*/.env.local
+*/.env.*.local
 
-# production
-/build
+# Allow example templates
+!.env.example
+!*/.env.example
 
-# misc
+# Testing and coverage
+coverage/
+
+# Misc and OS
 .DS_Store
+Thumbs.db
 *.pem
 
-# debug logs
+# Logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# local env files (sensitive keys)
-.env*.local
-.env
-!.env.example
+# Runtime Data
+data/
+*/data/
+*.json.bak
 
-# vercel
+# Vercel & IDE
 .vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# IDE and temporary files
 .vscode
 .idea
-*.log
+*.tsbuildinfo
+next-env.d.ts

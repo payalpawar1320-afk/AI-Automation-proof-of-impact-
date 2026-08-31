@@ -1,133 +1,87 @@
-# 🚀 Deployment Guide: Proof of Impact (ImpactLoop AI)
+# 🚀 Deployment Guide: Proof of Impact (Vercel + Render + MongoDB Atlas)
 
-This guide walks you through uploading your project to **GitHub** and deploying it to **Vercel** (Frontend / Fullstack) and/or **Render** (Web Service).
+This guide walks you through deploying your split architecture:
+- **Frontend**: Next.js App deployed on **Vercel** (`client/` directory).
+- **Backend API**: Node.js + Express API deployed on **Render** (`server/` directory).
+- **Database**: **MongoDB Atlas Cluster0** connected directly to the Render backend.
 
 ---
 
-## 📌 Prerequisites: MongoDB Atlas Network Access
+## 📌 Architecture Overview
 
-Before deploying to the cloud (Vercel or Render), ensure your MongoDB Atlas cluster allows incoming connections from cloud servers:
+```text
+GitHub (payalpawar1320-afk/AI-Automation-proof-of-impact-)
+├── client/  ──► Vercel (Frontend UI: https://ai-automation-proof-of-impact.vercel.app)
+└── server/  ──► Render (Backend API: https://your-backend.onrender.com)
+                     └──► MongoDB Atlas Cluster0 (Database)
+```
+
+---
+
+## 🗄️ Step 0: Ensure MongoDB Atlas Network Access
 
 1. Log into [MongoDB Atlas](https://cloud.mongodb.com).
-2. In the left sidebar, click **Network Access** (under *Security*).
+2. Under **Security** in the left sidebar, click **Network Access**.
 3. Check your IP Access List:
-   - If `0.0.0.0/0` (Allow access from anywhere) is not added, click **Add IP Address**.
-   - Select **Allow Access From Anywhere** (`0.0.0.0/0`).
-   - Click **Confirm**.
+   - Ensure `0.0.0.0/0` (Allow Access From Anywhere) is active so Render cloud servers can connect.
+   - If not present, click **Add IP Address** → **Allow Access From Anywhere** (`0.0.0.0/0`) → **Confirm**.
 
 ---
 
-## 🐙 Step 1: Upload Project to GitHub
+## 🖥️ Step 1: Deploy the Backend to Render
 
-### 1. Initialize Git & Check `.gitignore`
-The `.gitignore` file has already been created to protect your private `.env.local` keys.
-
-Open your terminal in the project folder and run:
-
-```bash
-# 1. Initialize git
-git init
-
-# 2. Stage all project files
-git add .
-
-# 3. Commit files
-git commit -m "feat: initial commit for Proof of Impact with MongoDB and Gemini AI"
-```
-
-### 2. Push to GitHub
-1. Go to [GitHub.com](https://github.com) and click **New repository** (+ icon top right).
-2. Name your repository (e.g. `proof-of-impact`).
-3. Leave it as **Public** (or **Private**) and **DO NOT** initialize with README or .gitignore (we already have them).
-4. Click **Create repository**.
-5. Copy the commands shown on GitHub and run them in your terminal:
-
-```bash
-# Rename branch to main
-git branch -M main
-
-# Link your local repo to GitHub (replace YOUR-USERNAME with your actual GitHub username)
-git remote add origin https://github.com/YOUR-USERNAME/proof-of-impact.git
-
-# Push code to GitHub
-git push -u origin main
-```
-
----
-
-## ⚡ Step 2: Deploy to Vercel (Recommended for Next.js)
-
-Since **Proof of Impact** is built with **Next.js 14 App Router**, Vercel natively deploys both the **Frontend UI** and the **Backend API routes** (`/api/issues`, `/api/ai/verify`, `/api/health`, etc.) with zero extra configuration.
-
-### 1. Import Repository
-1. Go to [Vercel.com](https://vercel.com) and log in with your GitHub account.
-2. Click **Add New...** → **Project**.
-3. Locate your `proof-of-impact` repository from the list and click **Import**.
-
-### 2. Configure Environment Variables
-In the **Environment Variables** section on Vercel, add:
-
-| Key | Value |
-| :--- | :--- |
-| `MONGODB_URI` | `mongodb+srv://<username>:<password>@cluster0.1zwuaww.mongodb.net/proof_of_impact?retryWrites=true&w=majority` |
-| `GEMINI_API_KEY` | `your_gemini_api_key_here` |
-| `NEXT_PUBLIC_APP_NAME` | `Proof of Impact` |
-
-### 3. Deploy
-1. Click **Deploy**.
-2. Vercel will build and launch your application in under 1 minute.
-3. You will get a free production URL (e.g. `https://proof-of-impact.vercel.app`).
-
----
-
-## 🖥️ Step 3: Deploy to Render (Alternative Web Service)
-
-If you prefer to run the Node.js production server on **Render**:
-
-### 1. Create a New Web Service
-1. Go to [Render.com](https://render.com) and log in.
+1. Log in to [Render.com](https://render.com).
 2. Click **New +** (top right) → **Web Service**.
-3. Connect your GitHub account and select your `proof-of-impact` repository.
+3. Connect your GitHub repository (`AI-Automation-proof-of-impact-`).
+4. Configure the Web Service with the following exact settings:
 
-### 2. Configure Settings
-Fill in the following fields:
+| Setting | Value |
+| :--- | :--- |
+| **Name** | `proof-of-impact-api` (or your preferred name) |
+| **Region** | Choose the region closest to you (e.g. *Singapore*, *Frankfurt*, or *Ohio*) |
+| **Branch** | `main` |
+| **Root Directory** | `server` |
+| **Runtime** | `Node` |
+| **Build Command** | `npm install && npm run build` |
+| **Start Command** | `npm start` |
+| **Instance Type** | `Free` |
 
-- **Name**: `proof-of-impact`
-- **Region**: Choose closest to you (e.g., `Singapore`, `Frankfurt`, or `Ohio`)
-- **Branch**: `main`
-- **Runtime**: `Node`
-- **Build Command**: `npm install && npm run build`
-- **Start Command**: `npm start`
-- **Instance Type**: `Free`
-
-### 3. Add Environment Variables on Render
-Scroll down to **Environment Variables** and add:
+5. Under **Environment Variables**, add the following:
 
 | Key | Value |
 | :--- | :--- |
-| `NODE_VERSION` | `20.18.0` |
-| `MONGODB_URI` | `mongodb+srv://<username>:<password>@cluster0.1zwuaww.mongodb.net/proof_of_impact?retryWrites=true&w=majority` |
-| `GEMINI_API_KEY` | `your_gemini_api_key_here` |
-| `PORT` | `3000` |
+| `NODE_ENV` | `production` |
+| `FRONTEND_URL` | `https://ai-automation-proof-of-impact.vercel.app` |
+| `MONGODB_URI` | `mongodb+srv://<username>:<password>@cluster0.1zwuaww.mongodb.net/proof_of_impact?retryWrites=true&w=majority&appName=Cluster0` |
+| `GEMINI_API_KEY` | `<your-gemini-api-key>` |
 
-### 4. Deploy Web Service
-1. Click **Create Web Service**.
-2. Render will pull from GitHub, install dependencies, build the Next.js production bundle, and launch your live site with an `onrender.com` domain.
+6. Click **Create Web Service**.
+7. Wait ~1-2 minutes for Render to build and start your service.
+8. Copy your live Render URL (e.g. `https://proof-of-impact-api.onrender.com`).
+9. Verify by visiting `https://<your-render-url>/api/health` in your browser.
 
 ---
 
-## 🧪 Step 4: Verify Your Cloud Deployment
+## ⚡ Step 2: Configure & Deploy the Frontend on Vercel
 
-Once deployed (on Vercel or Render):
-1. Open your live URL in a browser.
-2. Check the header badge: It should display **`[ 🗄️ MongoDB Atlas 🟢 ]`**.
-3. Visit `https://your-domain/api/health` to confirm:
-   ```json
-   {
-     "status": "connected",
-     "provider": "MongoDB Atlas",
-     "database": "proof_of_impact",
-     "readyState": 1
-   }
-   ```
-4. Click **"+ Report Issue"** to test submitting an issue and verifying that live Gemini AI triage and Before/After CV verification work in the cloud!
+### If using your existing Vercel project (`https://ai-automation-proof-of-impact.vercel.app`):
+1. Go to [Vercel Dashboard](https://vercel.com/dashboard).
+2. Click on your existing **`ai-automation-proof-of-impact`** project.
+3. Go to **Settings** → **General**:
+   - Find **Root Directory** and click **Edit**.
+   - Set it to **`client`** and click **Save**.
+4. Go to **Settings** → **Environment Variables**:
+   - Add/Update:
+     - **Key**: `NEXT_PUBLIC_API_URL`
+     - **Value**: `https://<your-render-app>.onrender.com` (your live Render backend URL)
+     - **Key**: `NEXT_PUBLIC_APP_NAME`
+     - **Value**: `Proof of Impact`
+5. Go to **Deployments** tab → Click the three dots `...` on the latest deployment → Click **Redeploy**.
+
+---
+
+## 🧪 Step 3: Verify Everything Live
+
+1. Open `https://ai-automation-proof-of-impact.vercel.app`.
+2. Check the header status badge: **`[ 🗄️ MongoDB Atlas 🟢 ]`**.
+3. Click **"+ Report Issue"** to submit an issue and verify live Gemini AI triage and Before/After photographic proof verification through the Render backend!
